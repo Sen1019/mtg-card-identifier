@@ -119,7 +119,7 @@
                 $("#threeBurgers").click();
                 $("#cardName").text("Loading...");
                 $.ajax({
-                    url: "http://api.ocr.space/parse/image",
+                    url: "https://api.ocr.space/parse/image",
                     method: "POST",
                     data:{
                         'apikey': '2a1ffc26e188957',
@@ -130,7 +130,7 @@
                     console.log(result.ParsedResults[0].ParsedText);
                     cardName = result.ParsedResults[0].ParsedText;
                     $("#cardName").text(cardName);
-                    $("#possibleCards").html("<span></span>");
+                    $("#possibleCards").html("<span></span><br/>");
                     if (cardName != ""){
                         $.ajax({
                             url: "https://api.magicthegathering.io/v1/cards?name=" + cardName,
@@ -141,9 +141,14 @@
                             if(cardResults.cards.length != 0){
                                 cardResults.cards.forEach(function(card){
                                     console.log(card);
-                                    $("#possibleCards span").after('<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=' 
-                                        + card.multiverseid + '" target="_blank"><img src="' + card.imageUrl +'"/></a>'
+                                    $("#possibleCards span:last").after('<span><a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=' 
+                                        + card.multiverseid + '" target="_blank"><img src="' + card.imageUrl +'"/></a></span>'
                                     );
+                                    if(card.rulings.length !=0){
+                                        card.rulings.forEach(function(rule){
+                                            $("a:last").after("<p>" + rule.date +" | "+ rule.text + "</p>");
+                                        });
+                                    }
                                 });
                             }else{
                                 $("#threeBurgers").click();
